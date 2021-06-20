@@ -13,10 +13,27 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->middleware('auth')->name('home');
+Route::get('/', 'HomeController@index')->name('home');
+
+//post pubblici
+Route::get('/blog', 'PostController@index')->name('blog');
+
+Route::get('/blog/{slug}', 'PostController@show')->name('blog-page');
+
+
+Route::prefix('admin')
+    ->namespace('Admin')
+    ->name('admin.')
+    ->middleware('auth')
+    ->group(function(){
+        Route::get('/', 'HomeController@index')->name('home');
+
+
+        Route::resource('posts', 'PostController'); //->name('post');
+    });
+
+
+
