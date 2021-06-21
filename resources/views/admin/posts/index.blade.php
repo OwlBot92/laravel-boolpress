@@ -11,7 +11,7 @@
                     <div class="card" style="margin-bottom: 20px;">
                         <div class="card-body">
                             <h5 class="card-title">{{ $post->title }}</h5>
-                            <a href="#" class="btn btn-primary">View Post</a>
+                            <a href="{{ route('admin.posts.show', [ 'post' => $post->id ]) }}" class="btn btn-primary">View Post</a>
                         </div>
                     </div>
                 </div>
