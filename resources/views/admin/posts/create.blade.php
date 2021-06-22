@@ -19,6 +19,16 @@
                 <textarea class="form-control" name="content" id="content" cols="30" rows="10"></textarea>
             </div>
 
+            <div class="form-group">
+                <label for="category">Category: </label>
+                <select class="form-control" name="category_id" id="">
+                    <option value="0">Nessuna</option>
+                    @foreach ($categories as $category)
+                        <option value="{{ $category->id }}" {{old('category_id') == $category->id ? 'selected' : '' }}>{{ $category->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+
             <input type="submit" value="Submit" class="btn btn-success">
         </form>
     </div>    

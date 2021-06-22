@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-
+use App\Category;
 use App\Post;
 
 class PostController extends Controller
@@ -32,7 +32,13 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('admin.posts.create');
+        $categories = Category::all();
+
+        $data = [
+            'categories' => $categories
+        ];
+
+        return view('admin.posts.create', $data);
     }
 
     /**
@@ -47,6 +53,7 @@ class PostController extends Controller
         $request->validate([
             'title'=>'required|max:255',
             'content'=>'required',
+            'category_id' => 'nullable|exists:categories,id'
         ]);
 
         $new_post_data = $request->all();
@@ -88,7 +95,8 @@ class PostController extends Controller
         $post = Post::findOrFail($id);
 
         $data = [
-            'post' => $post
+            'post' => $post,
+            'post_category' => $post->category
         ];
 
         return view('admin.posts.show', $data);
@@ -103,9 +111,11 @@ class PostController extends Controller
     public function edit($id)
     {
         $post = Post::findOrFail($id);
+        $categories = Category::all();
 
         $data = [
-            'post' => $post
+            'post' => $post,
+            'categories' => $categories
         ];
 
         return view('admin.posts.edit', $data);
@@ -123,6 +133,7 @@ class PostController extends Controller
         $request->validate([
             'title'=>'required|max:255',
             'content'=>'required',
+            'category_id' => 'nullable|exists:categories,id'
         ]);
 
         $updated_post_data = $request->all();
