@@ -19,7 +19,7 @@
                 <textarea class="form-control" name="content" id="content" cols="30" rows="10" value="{{ old( 'content', $post->content ) }}"></textarea>
             </div>
 
-            <input type="submit" value="Submit" class="btn btn-success">
+            <input type="submit" value="Edit Post" class="btn btn-success">
         </form>
 
     </div>    

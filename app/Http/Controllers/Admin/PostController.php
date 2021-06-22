@@ -74,7 +74,7 @@ class PostController extends Controller
         $new_post->fill($new_post_data);
         $new_post->save();
 
-        return redirect()->route('admin.posts.show');
+        return redirect()->route('admin.posts.index');
     }
 
     /**
@@ -125,12 +125,32 @@ class PostController extends Controller
             'content'=>'required',
         ]);
 
-        $update_post_data = $request->all();
+        $updated_post_data = $request->all();
+        $post = Post::findOrFail($id);   
+        //SLUG
+        if ($updated_post_data['title'] != $post->title) {
+            
+            $new_slug = Str::slug($post->title, '-');
+            $base_slug = $new_slug;
 
-        //slug
+            // Controllo univocità
+            $existing_post_with_slug = Post::where('slug', '=', $new_slug)->first();
+            $counter = 1;
 
-        $post = Post::findOrFail($id);        
-        $post->update($update_post_data);
+            while ($existing_post_with_slug) {
+                $new_slug = $base_slug . '-' . $counter;
+                $counter++;
+                $existing_post_with_slug = Post::where('slug', '=', $new_slug)->first();
+            }
+
+            $post->slug = $new_slug;
+        }
+        //FINE SLUG
+
+             
+        $post->update($updated_post_data);
+
+        return redirect()->route('admin.posts.index');
 
     }
 
@@ -142,6 +162,33 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $post_to_delete = Post::find($id);
+        $post_to_delete->delete();
+        return redirect()->route('admin.posts.index');
     }
+
+
+
+    //funzione sluggify da finire
+    public function sluggify($title)
+    {
+        $post = Post::findOrFail($id);
+        $new_slug = Str::slug($title, '-');
+        $base_slug = $new_slug;
+
+        // Controllo univocità
+        $existing_post_with_slug = Post::where('slug', '=', $new_slug)->first();
+        $counter = 1;
+
+        while ($existing_post_with_slug) {
+            $new_slug = $base_slug . '-' . $counter;
+            $counter++;
+            $existing_post_with_slug = Post::where('slug', '=', $new_slug)->first();
+        }
+
+        $post->slug = $new_slug;
+
+        return $post;
+    }
+
 }
