@@ -11,7 +11,7 @@ class CategoriesTableSeeder extends Seeder
      *
      * @return void
      */
-    public function run(Faker $faker)
+    public function run()
     {
         $categories=[
             'Antipasti',
@@ -23,7 +23,7 @@ class CategoriesTableSeeder extends Seeder
 
         foreach ($categories as $category) {
             $new_category = new Category();
-            $new_category->name = $category_name;
+            $new_category->name = $category;
             $new_category->slug = Str::slug($new_category->name, '-');
 
             $new_category->save();
