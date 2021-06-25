@@ -56,7 +56,8 @@ class PostController extends Controller
         $request->validate([
             'title'=>'required|max:255',
             'content'=>'required',
-            'category_id' => 'nullable|exists:categories,id'
+            'category_id' => 'nullable|exists:categories,id',
+            'tags' => 'nullable|exists:tags,id'
         ]);
 
         $new_post_data = $request->all();
@@ -83,6 +84,14 @@ class PostController extends Controller
         $new_post = new Post();
         $new_post->fill($new_post_data);
         $new_post->save();
+
+        //sync degli id dei tagm, dopo il save perchè sync è immediato.
+        //altrimenti non troverebbe nulla
+        
+
+        if (isset($new_post_data['tags']) && is_array($new_post_data['tags']) ) {
+            $new_post->tags()->sync($new_post_data['tags']);
+        }
 
         return redirect()->route('admin.posts.index');
     }
