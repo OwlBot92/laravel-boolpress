@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Category;
 use App\Post;
+use App\Tag;
 
 class PostController extends Controller
 {
@@ -33,10 +34,12 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::all();
+        $tags = Tag::all();
 
         $data = [
-            'categories' => $categories
-        ];
+            'categories' => $categories,
+            'tags' => $tags
+        ]; 
 
         return view('admin.posts.create', $data);
     }
@@ -93,9 +96,11 @@ class PostController extends Controller
     public function show($id)
     {
         $post = Post::findOrFail($id);
+        
         $data = [
             'post' => $post,
-            'post_category' => $post->category
+            'post_category' => $post->category,
+            'post_tags' => $post->tags
         ];
         return view('admin.posts.show', $data);
     }

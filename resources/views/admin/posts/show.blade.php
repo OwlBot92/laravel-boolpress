@@ -14,7 +14,13 @@
 
         <p>{{ $post->content }}</p>
 
-
+        <div class="mt-2 mb-2">
+            <span><b>Tags:</b></span>
+            @foreach ($postTags as $tag)
+                {{ $tag->name }} 
+                {{ $loop->last ? '' : ', ' }}
+            @endforeach
+        </div>
         
     </div>    
 
