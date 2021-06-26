@@ -87,8 +87,6 @@ class PostController extends Controller
 
         //sync degli id dei tagm, dopo il save perchè sync è immediato.
         //altrimenti non troverebbe nulla
-        
-
         if (isset($new_post_data['tags']) && is_array($new_post_data['tags']) ) {
             $new_post->tags()->sync($new_post_data['tags']);
         }
@@ -124,10 +122,12 @@ class PostController extends Controller
     {
         $post = Post::findOrFail($id);
         $categories = Category::all();
+        $tags = Tag::all();
 
         $data = [
             'post' => $post,
-            'categories' => $categories
+            'categories' => $categories,
+            'tags' => $tags
         ];
 
         return view('admin.posts.edit', $data);
@@ -145,7 +145,8 @@ class PostController extends Controller
         $request->validate([
             'title'=>'required|max:255',
             'content'=>'required',
-            'category_id' => 'nullable|exists:categories,id'
+            'category_id' => 'nullable|exists:categories,id',
+            'tags' => 'nullable|exists:tags,id'
         ]);
 
         $updated_post_data = $request->all();
@@ -171,7 +172,14 @@ class PostController extends Controller
         //FINE SLUG
 
              
-        $post->update($updated_post_data);
+        $post->update($updated_post_data); 
+
+        if (isset($updated_post_data['tags']) && is_array($updated_post_data['tags'])) {
+            $post->tags()->sync([$updated_post_data['tags']]);  
+        }
+        else {
+            $post->tags()->sync([]); 
+        }
 
         return redirect()->route('admin.posts.index');
 
@@ -186,6 +194,7 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post_to_delete = Post::find($id);
+        $post->tags()->sync([]); //sync([]) e non detach perchè non sappiamo chi vogliamo passare e con sync aggiorna al valore passato
         $post_to_delete->delete();
         return redirect()->route('admin.posts.index');
     }
