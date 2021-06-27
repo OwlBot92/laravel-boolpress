@@ -23,6 +23,7 @@ Route::get('/blog', 'PostController@index')->name('blog');
 
 Route::get('/blog/{slug}', 'PostController@show')->name('blog-page');
 
+Route::get('/vue-posts', 'PostController@vuePosts')->name('vue-post');
 
 Route::prefix('admin')
     ->namespace('Admin')
