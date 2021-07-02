@@ -4,6 +4,12 @@
     
     <div class="container">
 
+        @if ($post->cover)
+            <div class="mt-2 mb-2">
+                <img style="max-width: 100%" src="{{ asset('storage/' . $post->cover) }}" alt="{{ $post->title }}">
+            </div>
+        @endif
+
         @if ($post_category)
             <div class="mt-2 mb-2"><b>Category: </b> {{ $post_category->name }}</div>
         @endif

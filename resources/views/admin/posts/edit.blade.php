@@ -5,7 +5,7 @@
         <h1>Modifica Post: {{ $post->title }}</h1>
 
 
-        <form action="{{ route('admin.posts.update', ['post' => $post->id]) }}" method='post'>
+        <form action="{{ route('admin.posts.update', ['post' => $post->id]) }}" method='post' enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -38,13 +38,13 @@
                         @if ($errors->any())
                             <input class="form-check-input" name="tags[]" type="checkbox" 
                             value="{{ $tag->id }}" 
-                            id="tag-{{ $tag->id }}">
-                            {{ in_array($tag->id, old('tags', [] )) ? 'checked' : '' }}
+                            id="tag-{{ $tag->id }}"
+                            {{ in_array($tag->id, old('tags', [] )) ? 'checked' : '' }}>
                         @else
                             <input class="form-check-input" name="tags[]" type="checkbox" 
                             value="{{ $tag->id }}" 
-                            id="tag-{{ $tag->id }}">
-                            {{ $post->tags->contains($tag->id) ? 'checked' : ''}}
+                            id="tag-{{ $tag->id }}"
+                            {{ $post->tags->contains($tag->id) ? 'checked' : ''}}>
                         @endif
 
                     
@@ -54,6 +54,18 @@
                     </div>
                 @endforeach
             </div>
+
+            <div class="form-group">
+                <label for="cover-image">Banner Image</label>
+                <input type="file" class="form-control-file" id="cover-image" name="cover-image">
+            </div>
+
+            @if ($post->cover)
+                <div class="mb-3">
+                    <h3>Old image</h3>
+                    <img style="max-width: 300px" src="{{ asset('storage/' . $post->cover) }}" alt="">
+                </div>
+            @endif
 
             <input type="submit" value="Edit Post" class="btn btn-success">
         </form>

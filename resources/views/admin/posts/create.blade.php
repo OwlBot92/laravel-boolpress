@@ -5,7 +5,7 @@
         
         <h1>Create new post</h1>
 
-        <form action="{{ route('admin.posts.store') }}" method='post'>
+        <form action="{{ route('admin.posts.store') }}" method='post' enctype="multipart/form-data">
             @csrf
             @method('POST')
 
@@ -45,6 +45,11 @@
                         </label>
                     </div>
                 @endforeach
+            </div>
+
+            <div class="form-group">
+                <label for="cover-image">Banner Image</label>
+                <input type="file" class="form-control-file" id="cover-image" name="cover-image">
             </div>
 
             <input type="submit" value="Submit" class="btn btn-success">

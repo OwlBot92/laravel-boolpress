@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use App\Category;
 use App\Post;
 use App\Tag;
@@ -57,7 +58,8 @@ class PostController extends Controller
             'title'=>'required|max:255',
             'content'=>'required',
             'category_id' => 'nullable|exists:categories,id',
-            'tags' => 'nullable|exists:tags,id'
+            'tags' => 'nullable|exists:tags,id',
+            'cover-image' => 'nullable|image'
         ]);
 
         $new_post_data = $request->all();
@@ -80,6 +82,15 @@ class PostController extends Controller
         }
 
         $new_post_data['slug'] = $new_slug;
+
+        if (isset($new_post_data['cover-image'])) {
+            $uploaded_img_path = Storage::put('posts-cover', $new_post_data['cover-image']);
+
+            if ($uploaded_img_path) {
+                $new_post_data['cover'] = $uploaded_img_path;
+            }
+
+        }
 
         $new_post = new Post();
         $new_post->fill($new_post_data);
@@ -171,11 +182,19 @@ class PostController extends Controller
         }
         //FINE SLUG
 
-             
+        if (isset($new_post_data['cover-image'])) {
+            $uploaded_img_path = Storage::put('posts-cover', $new_post_data['cover-image']);
+
+            if ($uploaded_img_path) {
+                $new_post_data['cover'] = $uploaded_img_path;
+            }
+
+        }
+            
         $post->update($updated_post_data); 
 
         if (isset($updated_post_data['tags']) && is_array($updated_post_data['tags'])) {
-            $post->tags()->sync([$updated_post_data['tags']]);  
+            $post->tags()->sync($updated_post_data['tags']);  
         }
         else {
             $post->tags()->sync([]); 
@@ -194,10 +213,22 @@ class PostController extends Controller
     public function destroy($id)
     {
         $post_to_delete = Post::find($id);
-        $post->tags()->sync([]); //sync([]) e non detach perchè non sappiamo chi vogliamo passare e con sync aggiorna al valore passato
+        $post_to_delete->tags()->sync([]); //sync([]) e non detach perchè non sappiamo chi vogliamo passare e con sync aggiorna al valore passato
         $post_to_delete->delete();
         return redirect()->route('admin.posts.index');
     }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
